@@ -82,29 +82,36 @@
         listadoDepartamento = await _sDepartamento.GetDepartamentos();
         StateHasChanged();
     }
+
+
+
     private async Task EditarDepartamento(int id)
     {
-        var parameters = new DialogParameters { ["DepartamentoId"] = id };
+        // var parameters = new DialogParameters { ["DepartamentoId"] = id };
 
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        DialogService.ShowAsync<FrmDepartamento>("Editar Departamento", options);
-        await refrescar();
+        // DialogService.ShowAsync<FrmDepartamento>("Editar Departamento", options);
+        // await refrescar();
 
-        mDepartamento departamento = new mDepartamento();
-        departamento.Departamentoid = id;
+        // mDepartamento departamento = new mDepartamento();
+        // departamento.Departamentoid = id;
 
-        mResponse resultado = await _sDepartamento.UpdateDepartamento(departamento);
-        if (!resultado.error)
-        {
-            SB.Add("El departamento se ha eliminado con exito", Severity.Success);
-            await refrescar();
-        }
-        else
-        {
-            SB.Add(resultado.message, Severity.Error);
-        }
+        // mResponse resultado = await _sDepartamento.UpdateDepartamento(departamento);
+
+        // if (!resultado.error)
+        // {
+        //     SB.Add("El departamento se ha eliminado con exito", Severity.Success);
+        //     await refrescar();
+        // }
+        // else
+        // {
+        //     SB.Add(resultado.message, Severity.Error);
+        // }
     }
+
+
+
 
     private async Task EliminarDepartamento(int id)
     {
