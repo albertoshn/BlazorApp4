@@ -1,0 +1,89 @@
+﻿@page "/Departamentos/FrmDepartamento"
+@inject ISnackbar SB
+@inject sDepartamento _sDepartamento
+<MudDialog>
+    <TitleContent>
+        <MudText>
+            Crear Departamento
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField T="int" @bind-Value="departamento1.DepartamentoId " Label="Id" Disabled="true" />
+        <MudTextField T="string" @bind-Value="departamento1.Nombre" Label="Nombre" RequiredError="User name is required!" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Crear</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public int DepartamentoId { get; set; }
+
+    mDepartamento departamento1 = new mDepartamento();
+
+    private async void Submit()
+    {
+        if (DepartamentoId > 0)
+        {
+            // Cargar los detalles del departamento basado en el ID
+            departamento = await _sDepartamento.GetDepartamentoById(DepartamentoId);
+        }
+
+        if (string.IsNullOrEmpty(departamento1.Nombre))
+        {
+            SB.Add("Falta nombre de departamento", Severity.Warning);
+            return;
+        }
+
+        mResponse resultado = await _sDepartamento.CreateDepartamento(departamento1);
+        if (!resultado.error)
+        {
+            SB.Add("El departamento se guardo con exito", Severity.Success);
+            Cancel();
+        }
+        else
+        {
+            SB.Add(resultado.message, Severity.Error);
+        }
+
+    } 
+
+    private async void Submit(int id)
+    {
+
+        if (DepartamentoId > 0)
+        {
+            // Cargar los detalles del departamento basado en el ID
+            departamento = await _sDepartamento.GetDepartamentoById(DepartamentoId);
+        }
+
+        if (string.IsNullOrEmpty(departamento1.Nombre))
+        {
+            SB.Add("Falta nombre de departamento", Severity.Warning);
+            return;
+        }
+
+        mResponse resultado = await _sDepartamento.UpdateDepartamento(departamento);
+        if (!resultado.error)
+        {
+            SB.Add("El departamento se guardo con exito", Severity.Success);
+            Cancel();
+        }
+        else
+        {
+            SB.Add(resultado.message, Severity.Error);
+        }
+
+    } 
+    private as
+
+    private void Cancel() => MudDialog.Cancel();
+
+
+}
+

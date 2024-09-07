@@ -1,0 +1,133 @@
+﻿@page "/Departamentos/Departamento"
+@inject sDepartamento _sDepartamento
+@inject ISnackbar SB
+@inject IDialogService DialogService
+
+
+@* <h1>@_mDepartamento.getHola()</h1> *@
+<MudGrid Class="pa-4">
+    <MudItem xs="1">
+        <MudGrid Class="pa-1" Justify="Justify.FlexStart">
+            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" aria-label="add" Size="Size.Small" OnClick="OpenDialog" />
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="10" Style="display:flex; align-items:center">
+        <MudGrid Class="pa-2" Justify="Justify.Center">
+            <MudText Typo="Typo.h6">Departamento</MudText>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="1"></MudItem>
+    <MudItem xs="12">
+        <MudTable Items="@listadoDepartamento" Hover="true" FixedHeader="true" Dense="true" Striped="true" Bordered="true" Height=" 350px">
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Nombre</MudTh>
+                <MudTh>Acciones</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Id">@context.Departamentoid</MudTd>
+                <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
+                <MudTd DataLabel="Acciones" >
+
+                    <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => EditarDepartamento(context.Departamentoid))" />
+
+                    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => EliminarDepartamento(context.Departamentoid))" />
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[]{10, 50, 100}" />
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
+
+
+
+@code {
+    private List<mDepartamento> listadoDepartamento = new List<mDepartamento>();
+
+
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            // Lógica que solo se ejecuta después del primer renderizado.
+            Console.WriteLine("Componente renderizado por primera vez.");
+            try
+            {
+                await refrescar();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            // Lógica que se ejecuta después de cada renderizado.
+            Console.WriteLine("Componente renderizado de nuevo.");
+        }
+    }
+    private async Task refrescar()
+    {
+        listadoDepartamento = await _sDepartamento.GetDepartamentos();
+        StateHasChanged();
+    }
+    private async Task EditarDepartamento(int id)
+    {
+        var parameters = new DialogParameters { ["DepartamentoId"] = id };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        DialogService.ShowAsync<FrmDepartamento>("Editar Departamento", options);
+        await refrescar();
+
+        mDepartamento departamento = new mDepartamento();
+        departamento.Departamentoid = id;
+
+        mResponse resultado = await _sDepartamento.UpdateDepartamento(departamento);
+        if (!resultado.error)
+        {
+            SB.Add("El departamento se ha eliminado con exito", Severity.Success);
+            await refrescar();
+        }
+        else
+        {
+            SB.Add(resultado.message, Severity.Error);
+        }
+    }
+
+    private async Task EliminarDepartamento(int id)
+    {
+        mDepartamento departamento = new mDepartamento();
+        departamento.Departamentoid = id;
+
+        mResponse resultado = await _sDepartamento.DeleteDepartamento(departamento);
+        if (!resultado.error)
+        {
+            SB.Add("El departamento se ha eliminado con exito", Severity.Success);
+            await refrescar();
+        }
+        else
+        {
+            SB.Add(resultado.message, Severity.Error);
+        }
+    }
+    private async Task OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        DialogService.ShowAsync<FrmDepartamento>("Crear Departamento", options);
+        await refrescar();
+    }
+
+}
