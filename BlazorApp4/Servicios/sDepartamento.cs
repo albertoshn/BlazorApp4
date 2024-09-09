@@ -36,6 +36,19 @@ namespace BlazorApp4.Servicios
             }
         }
 
+        public async Task<mResponse> UpdateDepartamento(mDepartamento departamento)
+        {
+            try
+            {
+                return await accesoDatos.UpdateDepartamento(departamento);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
         public async Task<mResponse> DeleteDepartamento(mDepartamento departamento)
         {
             try
@@ -49,18 +62,7 @@ namespace BlazorApp4.Servicios
             }
         }
 
-        public async Task<mResponse> UpdateDepartamento(mDepartamento departamento)
-        {
-            try
-            {
-                return await accesoDatos.UpdateDepartamento(departamento);
-            }
-            catch (Exception e)
-            {
-
-                throw new Exception(e.Message);
-            }
-        }
+        
 
         //public string getHola() {
         //    return "Hola";

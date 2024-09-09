@@ -71,7 +71,7 @@ namespace BlazorApp4.Datos
 
         public async Task<mResponse> UpdateDepartamento(mDepartamento departament)
         {
-            int id;
+            int resultado;
             try
             {
                 SqlMapper.Settings.CommandTimeout = 120;
@@ -79,11 +79,12 @@ namespace BlazorApp4.Datos
                 {
                     DynamicParameters parametros = new DynamicParameters();
                     parametros.Add("@idDepartamento", departament.Departamentoid);
-                    parametros.Add("@Id", DbType.Int64, direction: ParameterDirection.Output);
+                    parametros.Add("@NombreDepartamento", departament.Nombre);
+                    parametros.Add("@resultado", DbType.Int64, direction: ParameterDirection.Output);
                     await db.ExecuteAsync("UpdateDepartamento", parametros, commandType: CommandType.StoredProcedure);
-                    id = parametros.Get<int>("@Id");
+                    resultado = parametros.Get<int>("@resultado");
                 }
-                if (id != 0)
+                if (resultado != 0)
                 {
                     return new mResponse()
                     {
@@ -117,7 +118,7 @@ namespace BlazorApp4.Datos
 
         public async Task<mResponse> DeleteDepartamento(mDepartamento departament)
         {
-            int id;
+            int resultado;
             try
             {
                 SqlMapper.Settings.CommandTimeout = 120;
@@ -125,11 +126,11 @@ namespace BlazorApp4.Datos
                 {
                     DynamicParameters parametros = new DynamicParameters();
                     parametros.Add("@idDepartamento", departament.Departamentoid);
-                    parametros.Add("@Id", DbType.Int64, direction: ParameterDirection.Output);
+                    parametros.Add("@Resultado", DbType.Int64, direction: ParameterDirection.Output);
                     await db.ExecuteAsync("DeleteDepartamento", parametros, commandType: CommandType.StoredProcedure);
-                    id = parametros.Get<int>("@Id");
+                    resultado = parametros.Get<int>("@Resultado");
                 }
-                if (id != 0)
+                if (resultado == 0)
                 {
                     return new mResponse()
                     {
@@ -138,12 +139,20 @@ namespace BlazorApp4.Datos
                     };
 
                 } 
+                else if(resultado == 2)
+                {
+                    return new mResponse()
+                    {
+                        error = true,
+                        message = "Hay empleados asignados al departamento"
+                    };
+                }
                 else
                 {
                     return new mResponse()
                     {
-                        error = false,
-                        message = "No se realizo el registro"
+                        error = true,
+                        message = "No se ha podido eliminar el registro"
                     };
                 }
 

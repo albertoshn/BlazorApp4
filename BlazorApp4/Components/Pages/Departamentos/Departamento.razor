@@ -29,7 +29,7 @@
                 <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
                 <MudTd DataLabel="Acciones" >
 
-                    <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => EditarDepartamento(context.Departamentoid))" />
+                    <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => EditarDepartamento(context))" />
 
                     <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => EliminarDepartamento(context.Departamentoid))" />
 
@@ -77,22 +77,24 @@
             Console.WriteLine("Componente renderizado de nuevo.");
         }
     }
+
     private async Task refrescar()
     {
+        listadoDepartamento.Clear();
         listadoDepartamento = await _sDepartamento.GetDepartamentos();
         StateHasChanged();
     }
 
 
 
-    private async Task EditarDepartamento(int id)
+    private async Task EditarDepartamento(mDepartamento depa)
     {
-        // var parameters = new DialogParameters { ["DepartamentoId"] = id };
+        var parameters = new DialogParameters();
+        parameters.Add("departamento1", depa);
+        var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        // var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        // DialogService.ShowAsync<FrmDepartamento>("Editar Departamento", options);
-        // await refrescar();
+        await DialogService.Show<FrmDepartamento>("Editar Departamento",parameters, options).Result;
+        await refrescar();
 
         // mDepartamento departamento = new mDepartamento();
         // departamento.Departamentoid = id;
@@ -110,8 +112,14 @@
         // }
     }
 
-
-
+    private async Task OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var parameters = new DialogParameters();
+        parameters.Add("Texto", "Crear Departamento");
+        await DialogService.Show<FrmDepartamento>("Crear Departamento", options).Result;
+        await refrescar();
+    }
 
     private async Task EliminarDepartamento(int id)
     {
@@ -129,12 +137,7 @@
             SB.Add(resultado.message, Severity.Error);
         }
     }
-    private async Task OpenDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        DialogService.ShowAsync<FrmDepartamento>("Crear Departamento", options);
-        await refrescar();
-    }
+    
 
 }
