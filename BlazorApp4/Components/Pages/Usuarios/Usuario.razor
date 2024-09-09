@@ -1,5 +1,119 @@
-﻿<h3>Usuario</h3>
+﻿@page "/Usuarios/Usuario"
+
+@inject sUsuario _sUsuario
+@inject ISnackbar SB
+@inject IDialogService DialogService
+
+<MudGrid Class="pa-4">
+    <MudItem xs="1">
+        <MudGrid Class="pa-1" Justify="Justify.FlexStart">
+            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" aria-label="add" Size="Size.Small"  />
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="10" Style="display:flex; align-items:center">
+        <MudGrid Class="pa-2" Justify="Justify.Center">
+            <MudText Typo="Typo.h6">Empleados</MudText>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="1"></MudItem>
+    <MudItem xs="12">
+        <MudTable Items="@listadoUsuarios" Hover="true" FixedHeader="true" Dense="true" Striped="true" Bordered="true" Height=" 350px">
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Nombre</MudTh>
+                <MudTh>Correo</MudTh>
+                <MudTh>Departamento</MudTh>
+                <MudTh>Sueldo</MudTh>
+                <MudTh>Fecha Registro</MudTh>
+                <MudTh>Acciones</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Id">@context.Usuarioid</MudTd>
+                <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
+                <MudTd DataLabel="Correo">@context.Correo</MudTd>
+                <MudTd DataLabel="Departamento">@context.Departamento</MudTd>
+                <MudTd DataLabel="Sueldo">@context.Sueldo</MudTd>
+                <MudTd DataLabel="Fecha Registro">@context.Fecharegistro</MudTd>
+                <MudTd DataLabel="Acciones">
+
+                    <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => EditarUsuario(context))" />
+
+                    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => EliminarUsuario(context))" />
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[]{10, 50, 100}" />
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
 
 @code {
+    List<mUsuario> listadoUsuarios = new List<mUsuario>();
+
+    
+    public async Task AgregarUsuario(mUsuario usuario)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("usuario1", usuario);
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        await DialogService.Show<FrmUsuario>("Agregar Departamento", parameters, options).Result;
+        await refrescarTabla();
+    }
+
+    public async Task EditarUsuario(mUsuario usuario)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("usuario1", usuario);
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        await DialogService.Show<FrmUsuario>("Editar Departamento", parameters, options).Result;
+        await refrescarTabla();
+    }
+
+    public async Task EliminarUsuario(mUsuario usuario)
+    {
+ 
+        // mResponse resultado = await _sUsuario.DeleteUsuarios(usuario);
+        // if (!resultado.error)
+        // {
+        //     SB.Add("El departamento se ha eliminado con exito", Severity.Success);
+        //     await refrescarTabla();
+        // }
+        // else
+        // {
+        //     SB.Add(resultado.message, Severity.Error);
+        // }
+    }
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await refrescarTabla();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task refrescarTabla()
+    {
+        listadoUsuarios.Clear();
+        listadoUsuarios = await _sUsuario.GetUsuarios();
+        StateHasChanged();
+    }
 
 }

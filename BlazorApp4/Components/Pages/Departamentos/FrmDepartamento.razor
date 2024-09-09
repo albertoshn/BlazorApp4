@@ -20,50 +20,7 @@
 
     [Parameter]
     public mDepartamento departamento1 { get; set; } = new mDepartamento();
-    //private bool IsEditMode => IdDepartamento.HasValue;
 
-    //mDepartamento departamento1 = new mDepartamento();
-
-
-    private async void Submit()
-    {
-        mResponse resultado;
-
-        if (string.IsNullOrEmpty(departamento1.Nombre))
-        {
-            SB.Add("Falta nombre de departamento", Severity.Warning);
-            return;
-        }
-
-        if (departamento1.Departamentoid > 0)
-        {
-            //departamento1.Departamentoid = deo;
-            resultado = await _sDepartamento.UpdateDepartamento(departamento1);
-
-            if (!resultado.error)
-            {
-                SB.Add("El departamento se ha editado con exito", Severity.Success);
-                Cancel();
-            }
-            else
-            {
-                SB.Add(resultado.message, Severity.Error);
-            }
-        }
-        else
-        {
-            resultado = await _sDepartamento.CreateDepartamento(departamento1);
-            if (!resultado.error)
-            {
-                SB.Add("El departamento se ha guardo con exito", Severity.Success);
-                Cancel();
-            }
-            else
-            {
-                SB.Add(resultado.message, Severity.Error);
-            }
-        }
-    }
     private async void Guardar()
     {
 
@@ -95,6 +52,52 @@
 
     }
     private void Cancel() => MudDialog.Cancel();
+
+    //private bool IsEditMode => IdDepartamento.HasValue;
+
+    //mDepartamento departamento1 = new mDepartamento();
+
+
+    // private async void Submit()
+    // {
+    //     mResponse resultado;
+
+    //     if (string.IsNullOrEmpty(departamento1.Nombre))
+    //     {
+    //         SB.Add("Falta nombre de departamento", Severity.Warning);
+    //         return;
+    //     }
+
+    //     if (departamento1.Departamentoid > 0)
+    //     {
+    //         //departamento1.Departamentoid = deo;
+    //         resultado = await _sDepartamento.UpdateDepartamento(departamento1);
+
+    //         if (!resultado.error)
+    //         {
+    //             SB.Add("El departamento se ha editado con exito", Severity.Success);
+    //             Cancel();
+    //         }
+    //         else
+    //         {
+    //             SB.Add(resultado.message, Severity.Error);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         resultado = await _sDepartamento.CreateDepartamento(departamento1);
+    //         if (!resultado.error)
+    //         {
+    //             SB.Add("El departamento se ha guardo con exito", Severity.Success);
+    //             Cancel();
+    //         }
+    //         else
+    //         {
+    //             SB.Add(resultado.message, Severity.Error);
+    //         }
+    //     }
+    // }
+    
 
 }
 

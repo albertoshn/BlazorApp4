@@ -95,21 +95,6 @@
 
         await DialogService.Show<FrmDepartamento>("Editar Departamento",parameters, options).Result;
         await refrescar();
-
-        // mDepartamento departamento = new mDepartamento();
-        // departamento.Departamentoid = id;
-
-        // mResponse resultado = await _sDepartamento.UpdateDepartamento(departamento);
-
-        // if (!resultado.error)
-        // {
-        //     SB.Add("El departamento se ha eliminado con exito", Severity.Success);
-        //     await refrescar();
-        // }
-        // else
-        // {
-        //     SB.Add(resultado.message, Severity.Error);
-        // }
     }
 
     private async Task OpenDialog()
@@ -117,10 +102,11 @@
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var parameters = new DialogParameters();
         parameters.Add("Texto", "Crear Departamento");
+
         await DialogService.Show<FrmDepartamento>("Crear Departamento", options).Result;
         await refrescar();
     }
-
+     
     private async Task EliminarDepartamento(int id)
     {
         mDepartamento departamento = new mDepartamento();
