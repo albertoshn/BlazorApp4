@@ -1,5 +1,110 @@
-﻿<h3>FrmUsuario</h3>
+﻿@page "/Usuarios/FrmUsuario"
+@inject ISnackbar SB
+@inject sUsuario _sUsuario
+@inject sDepartamento _sDepartamento
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField T="int" @bind-Value="usuario1.Usuarioid" Label="ID"   Disabled="true" />
+        <MudTextField T="string" @bind-Value="usuario1.Nombre" RequiredError="El nombre es requerido!" Label="Nombre" />
+        <MudTextField T="string" @bind-Value="usuario1.Correo" RequiredError="El correo es requerido!" Label="Correo" />
+        <MudTextField T="int" @bind-Value="usuario1.Departamento" RequiredError="El departamento es requerido!" Label="Departamento" />
+        <MudTextField T="int" @bind-Value="usuario1.Sueldo" Label="Sueldo" RequiredError="El sueldo es requerido!" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
+        <MudTextField T="DateTime?" @bind-Value="usuario1.Fecharegistro" Label="Fecha Registro" Disabled="true" />
+        
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Guardar">Enviar</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
 
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public mUsuario usuario1 { get; set; } = new mUsuario();
+
+    private async void Guardar()
+    {
+
+        if (string.IsNullOrEmpty(usuario1.Nombre))
+        {
+            SB.Add("Falta llenar el campo Nombre", Severity.Warning);
+            return;
+        }
+        try
+        {
+            mResponse result = usuario1.Usuarioid > 0 ? (await _sUsuario.UpdateUsuarios(usuario1)) : (await _sUsuario.CreateUsuarios(usuario1));
+            if (!result.error)
+            {
+                SB.Add("El departamento se ha actualizado con exito", Severity.Success);
+                Cancel();
+
+            }
+            else
+            {
+                SB.Add(result.message, Severity.Error);
+            }
+
+        }
+        catch (Exception)
+        {
+            SB.Add("No se pudo actualizar el registros.", Severity.Error);
+        }
+
+
+    }
+    private void Cancel() => MudDialog.Cancel();
+
+    //private bool IsEditMode => IdDepartamento.HasValue;
+
+    //mDepartamento departamento1 = new mDepartamento();
+
+
+    // private async void Submit()
+    // {
+    //     mResponse resultado;
+
+    //     if (string.IsNullOrEmpty(departamento1.Nombre))
+    //     {
+    //         SB.Add("Falta nombre de departamento", Severity.Warning);
+    //         return;
+    //     }
+
+    //     if (departamento1.Departamentoid > 0)
+    //     {
+    //         //departamento1.Departamentoid = deo;
+    //         resultado = await _sDepartamento.UpdateDepartamento(departamento1);
+
+    //         if (!resultado.error)
+    //         {
+    //             SB.Add("El departamento se ha editado con exito", Severity.Success);
+    //             Cancel();
+    //         }
+    //         else
+    //         {
+    //             SB.Add(resultado.message, Severity.Error);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         resultado = await _sDepartamento.CreateDepartamento(departamento1);
+    //         if (!resultado.error)
+    //         {
+    //             SB.Add("El departamento se ha guardo con exito", Severity.Success);
+    //             Cancel();
+    //         }
+    //         else
+    //         {
+    //             SB.Add(resultado.message, Severity.Error);
+    //         }
+    //     }
+    // }
+
+
 }
+

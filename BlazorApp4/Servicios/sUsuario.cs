@@ -13,7 +13,7 @@ namespace BlazorApp4.Servicios
             accesoDatos=new dUsuario(cnn);
         }
 
-        public async Task<List<mUsuario>> GetUsuarios()
+        public async Task<List<mUsuario>?> GetUsuarios()
         {
             try
             {
@@ -26,11 +26,11 @@ namespace BlazorApp4.Servicios
             }
         }
 
-        public async Task<List<mUsuario>> CreateUsuarios(mUsuario usuario)
+        public async Task<mResponse> CreateUsuarios(mUsuario usuario)
         {
             try
             {
-                return await accesoDatos.GetUsuarios();
+                return await accesoDatos.CreateUsuarios(usuario);
             }
             catch (Exception e)
             {
@@ -39,11 +39,11 @@ namespace BlazorApp4.Servicios
             }
         }
 
-        public async Task<List<mUsuario>> UpdateUsuarios(mUsuario usuario)
+        public async Task<mResponse> UpdateUsuarios(mUsuario usuario)
         {
             try
             {
-                return await accesoDatos.GetUsuarios();
+                return await accesoDatos.UpdateUsuario(usuario);
             }
             catch (Exception e)
             {
@@ -52,11 +52,11 @@ namespace BlazorApp4.Servicios
             }
         }
 
-        public async Task<List<mUsuario>> DeleteUsuarios(mUsuario usuario)
+        public async Task<mResponse> DeleteUsuarios(mUsuario usuario)
         {
             try
             {
-                return await accesoDatos.GetUsuarios();
+                return await accesoDatos.DeleteUsuario(usuario);
             }
             catch (Exception e)
             {
