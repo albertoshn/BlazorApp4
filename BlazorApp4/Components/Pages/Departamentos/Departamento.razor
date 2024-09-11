@@ -6,7 +6,7 @@
 
 <MudGrid Class="pa-4">
     <MudItem xs="1">
-        <MudGrid Class="pa-1" Justify="Justify.FlexStart">
+        <MudGrid Class="pt-4 ps-xl-4" Justify="Justify.FlexStart">
             <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" aria-label="add" Size="Size.Small" OnClick="OpenDialog" />
         </MudGrid>
     </MudItem>
@@ -21,17 +21,17 @@
             <HeaderContent>
                 <MudTh>Id</MudTh>
                 <MudTh>Nombre</MudTh>
-                <MudTh>Acciones</MudTh>
+                <MudTh Style="width: 150px; text-align: center;">Acciones</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Id">@context.Departamentoid</MudTd>
                 <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
-                <MudTd DataLabel="Acciones" >
+                <MudTd Style="width: 150px;" DataLabel="Acciones">
+                    <div style="display: flex; justify-content: center; gap: 10px;">
+                        <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => EditarDepartamento(context))" />
 
-                    <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => EditarDepartamento(context))" />
-
-                    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => EliminarDepartamento(context.Departamentoid))" />
-
+                        <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => EliminarDepartamento(context.Departamentoid))" />
+                    </div>
                 </MudTd>
             </RowTemplate>
             <PagerContent>
@@ -45,8 +45,6 @@
 
 @code {
     private List<mDepartamento> listadoDepartamento = new List<mDepartamento>();
-
-
 
     protected override async void OnAfterRender(bool firstRender)
     {

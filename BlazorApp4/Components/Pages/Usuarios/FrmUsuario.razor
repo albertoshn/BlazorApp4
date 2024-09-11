@@ -9,7 +9,7 @@
         <MudTextField T="int" @bind-Value="usuario1.Usuarioid" Label="ID"   Disabled="true" />
         <MudTextField T="string" @bind-Value="usuario1.Nombre" RequiredError="El nombre es requerido!" Label="Nombre" />
         <MudTextField T="string" @bind-Value="usuario1.Correo" RequiredError="El correo es requerido!" Label="Correo" />
-        <MudTextField T="int" @bind-Value="usuario1.Departamento" RequiredError="El departamento es requerido!" Label="Departamento" />
+        <MudAutocomplete T="string" @bind-Value="_seleccionDepa" SearchFunc="Search" RequiredError="El departamento es requerido!" Label="Departamento" />
         <MudTextField T="int" @bind-Value="usuario1.Sueldo" Label="Sueldo" RequiredError="El sueldo es requerido!" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
         <MudTextField T="DateTime?" @bind-Value="usuario1.Fecharegistro" Label="Fecha Registro" Disabled="true" />
         
@@ -27,6 +27,24 @@
 
     [Parameter]
     public mUsuario usuario1 { get; set; } = new mUsuario();
+
+    string? _seleccionDepa;
+    public List<mDepartamento> listaDepartamento = new List<mDepartamento>();
+
+    private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
+    {
+        listaDepartamento = await _sDepartamento.GetDepartamentos();
+        await Task.Delay(5, token);
+
+        // Si el valor está vacío, devolver todos los nombres
+        if (string.IsNullOrEmpty(value))
+            return listaDepartamento.Select(d => d.Nombre);
+
+        // Filtrar por nombre que contiene el valor ingresado
+        return listaDepartamento
+            .Where(d => d.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+            .Select(d => d.Nombre);
+    }
 
     private async void Guardar()
     {
