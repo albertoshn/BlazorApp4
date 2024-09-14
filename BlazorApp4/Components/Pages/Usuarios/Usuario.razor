@@ -18,7 +18,11 @@
     </MudItem>
     <MudItem xs="1"></MudItem>
     <MudItem xs="12">
-        <MudTable Items="@listadoUsuarios" Hover="true" FixedHeader="true" Dense="true" Striped="true" Bordered="true" Height=" 350px">
+        <MudTable Items="@listadoUsuarios" Hover="true" FixedHeader="true" Dense="true" Striped="true" Bordered="true" Height=" 350px" Filter="new Func<mUsuario,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+            <ToolBarContent>
+                <MudSpacer />
+                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
             <HeaderContent>
                 <MudTh>Id</MudTh>
                 <MudTh>Nombre</MudTh>
@@ -33,6 +37,11 @@
                 <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
                 <MudTd DataLabel="Correo">@context.Correo</MudTd>
                 <MudTd DataLabel="Departamento">
+                    @context.DepartamentoNombre
+                    @* @(listadoDepartamento.FirstOrDefault(x=> x.Departamentoid == context.Departamento) == null ? 
+                        "No asignado" : listadoDepartamento.FirstOrDefault(x => x.Departamentoid == context.Departamento)?.Nombre
+                    ) *@
+@* 
                     @if (context.Departamento != null)
                     {
                         @OnDepartamentoChanged(context.Departamento).Nombre
@@ -40,7 +49,7 @@
                     else
                     {
                         <em>No asignado</em>
-                    }
+                    } *@
                 </MudTd>
                 <MudTd DataLabel="Sueldo">@context.Sueldo</MudTd>
                 <MudTd DataLabel="Fecha Registro">@context.Fecharegistro</MudTd>
@@ -58,15 +67,34 @@
         </MudTable>
     </MudItem>
 </MudGrid>
+<MudOverlay @bind-Visible="visible" DarkBackground="true" ZIndex="9999" AutoClose="true" />
 
 @code {
     List<mUsuario> listadoUsuarios = new List<mUsuario>();
     List<mDepartamento> listadoDepartamento = new List<mDepartamento>();
-    private mDepartamento OnDepartamentoChanged(int selectedDepartment)
+    private string searchString1 = "";
+    private mUsuario selectedItem1 = null;
+    private HashSet<mUsuario> selectedItems = new HashSet<mUsuario>();
+    private bool visible;
+
+    private bool FilterFunc1(mUsuario element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(mUsuario element, string searchString)
     {
-        mDepartamento departamento;
-        return departamento = listadoDepartamento.FirstOrDefault(d => d.Departamentoid == selectedDepartment);
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Usuarioid}".Contains(searchString))
+            return true;
+        return false;
     }
+
+    // private mDepartamento OnDepartamentoChanged(int selectedDepartment)
+    // {
+    //     mDepartamento departamento;
+    //     return departamento = listadoDepartamento.FirstOrDefault(d => d.Departamentoid == selectedDepartment);
+    // }
 
     public async Task AgregarUsuario()
     {
@@ -81,10 +109,10 @@
 
     public async Task EditarUsuario(mUsuario usuario)
     {
-        mDepartamento depa = OnDepartamentoChanged(usuario.Departamento);
+       // mDepartamento depa = OnDepartamentoChanged(usuario.Departamento);
         var parameters = new DialogParameters();
         parameters.Add("usuario1", usuario);
-        parameters.Add("departamento1", depa);
+        //parameters.Add("departamento1", depa);
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         await DialogService.Show<FrmUsuario>("Editar Empleado", parameters, options).Result;
@@ -111,16 +139,19 @@
         {
             try
             {
+                visible = true;
+                StateHasChanged();
+                listadoDepartamento = await _sDepartamento.GetDepartamentos();
                 await refrescarTabla();
 
             }
             catch (Exception)
             {
-
                 throw;
             }
             finally
             {
+                visible = false;
                 StateHasChanged();
             }
         }
@@ -129,7 +160,6 @@
     private async Task refrescarTabla()
     {
         listadoUsuarios.Clear();
-        listadoDepartamento = await _sDepartamento.GetDepartamentos();
         listadoUsuarios = await _sUsuario.GetUsuarios();
         StateHasChanged();
     }

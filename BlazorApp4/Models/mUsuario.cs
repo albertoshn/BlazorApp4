@@ -12,10 +12,11 @@ public partial class mUsuario
     public string Correo { get; set; } = null!;
 
     public int Departamento { get; set; }
-
+    public string DepartamentoNombre { get; set; }
     public int Sueldo { get; set; }
 
     public DateTime? Fecharegistro { get; set; }
+
 
     public virtual mDepartamento DepartamentoNavigation { get; set; } = null!;
 }

@@ -22,8 +22,10 @@ builder.Services.AddDbContext<CrudcursoContext>( opciones =>
 string cadenaConexion = builder.Configuration.GetConnectionString("conexionSql");
 
 
+
 builder.Services.AddScoped( provider => new sDepartamento(cadenaConexion));
-builder.Services.AddScoped(provider => new sUsuario(cadenaConexion));
+builder.Services.AddScoped( provider => new sUsuario(cadenaConexion));
+builder.Services.AddScoped( provider => new sAnime(cadenaConexion));
 
 
 var app = builder.Build();

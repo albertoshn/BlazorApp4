@@ -1,0 +1,159 @@
+﻿@page "/Animes/Anime"
+@using System.Net.Http.Json
+@inject sAnime _sAnime
+
+<MudTable Items="@Elements" Dense="true" Hover="true" Bordered="true" Striped="true" Filter="new Func<mAnime,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Lista de Animes</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Nombre</MudTh>
+        <MudTh>Estatus</MudTh>
+        <MudTh>Capitulos</MudTh>
+        <MudTh>Temporadas</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Animeid</MudTd>
+        <MudTd DataLabel="Sign">@context.Nombre</MudTd>
+        <MudTd DataLabel="Name">@context.Estatus</MudTd>
+        <MudTd DataLabel="Position">@context.Capitulos</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Numtemporadas</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{5,10, 50, 100}" />
+    </PagerContent>
+</MudTable>
+<MudTable Items="@AnimesEmision" Dense="true" Hover="true" Bordered="true" Striped="true" Filter="new Func<mAnime,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Lista de Animes Solo Emision</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Nombre</MudTh>
+        <MudTh>Estatus</MudTh>
+        <MudTh>Capitulos</MudTh>
+        <MudTh>Temporadas</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Animeid</MudTd>
+        <MudTd DataLabel="Sign">@context.Nombre</MudTd>
+        <MudTd DataLabel="Name">@context.Estatus</MudTd>
+        <MudTd DataLabel="Position">@context.Capitulos</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Numtemporadas</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{5,10, 50, 100}" />
+    </PagerContent>
+</MudTable>
+<MudTable Items="@AnimesNoEmision" Dense="true" Hover="true" Bordered="true" Striped="true" Filter="new Func<mAnime,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Lista de Animes Solo Finalizado</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Nombre</MudTh>
+        <MudTh>Estatus</MudTh>
+        <MudTh>Capitulos</MudTh>
+        <MudTh>Temporadas</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Animeid</MudTd>
+        <MudTd DataLabel="Sign">@context.Nombre</MudTd>
+        <MudTd DataLabel="Name">@context.Estatus</MudTd>
+        <MudTd DataLabel="Position">@context.Capitulos</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Numtemporadas</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{5,10, 50, 100}" />
+    </PagerContent>
+</MudTable>
+<MudTable Items="@AnimesMasTemp1" Dense="true" Hover="true" Bordered="true" Striped="true" Filter="new Func<mAnime,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Lista de Animes Con Solo 1 Temporada</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Nombre</MudTh>
+        <MudTh>Estatus</MudTh>
+        <MudTh>Capitulos</MudTh>
+        <MudTh>Temporadas</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Animeid</MudTd>
+        <MudTd DataLabel="Sign">@context.Nombre</MudTd>
+        <MudTd DataLabel="Name">@context.Estatus</MudTd>
+        <MudTd DataLabel="Position">@context.Capitulos</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Numtemporadas</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{5,10, 50, 100}" />
+    </PagerContent>
+</MudTable>
+<MudTable Items="@AnimesMas24Menos100Temp1" Dense="true" Hover="true" Bordered="true" Striped="true" Filter="new Func<mAnime,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Lista de Animes Con 1 Temporada Rango Capitulos</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Nombre</MudTh>
+        <MudTh>Estatus</MudTh>
+        <MudTh>Capitulos</MudTh>
+        <MudTh>Temporadas</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Animeid</MudTd>
+        <MudTd DataLabel="Sign">@context.Nombre</MudTd>
+        <MudTd DataLabel="Name">@context.Estatus</MudTd>
+        <MudTd DataLabel="Position">@context.Capitulos</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Numtemporadas</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{5,10, 50, 100}" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private string searchString1 = "";
+    private mAnime selectedItem1 = null;
+
+    private IEnumerable<mAnime> Elements = new List<mAnime>();
+    private IEnumerable<mAnime> AnimesEmision = new List<mAnime>();
+    private IEnumerable<mAnime> AnimesNoEmision = new List<mAnime>();
+    private IEnumerable<mAnime> AnimesMasTemp1 = new List<mAnime>();
+    private IEnumerable<mAnime> AnimesMas24Menos100Temp1 = new List<mAnime>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Elements = await _sAnime.GetAnimes();
+        AnimesEmision = Elements.Where(e => string.Equals(e.Estatus, "En emisión", StringComparison.CurrentCultureIgnoreCase));
+        AnimesNoEmision = Elements.Except(AnimesEmision).ToList();
+        AnimesMasTemp1 = AnimesNoEmision.Where(e => e.Numtemporadas == 1);
+        AnimesMas24Menos100Temp1 = Elements;
+    }
+
+    private bool FilterFunc1(mAnime element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(mAnime element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Estatus.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Animeid} {element.Capitulos} {element.Numtemporadas}".Contains(searchString))
+            return true;
+        return false;
+    }
+}
