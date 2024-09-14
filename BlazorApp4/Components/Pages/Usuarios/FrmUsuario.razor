@@ -9,7 +9,7 @@
         <MudTextField T="int" @bind-Value="usuario1.Usuarioid" Label="ID"   Disabled="true" />
         <MudTextField T="string" @bind-Value="usuario1.Nombre" RequiredError="El nombre es requerido!" Label="Nombre" />
         <MudTextField T="string" @bind-Value="usuario1.Correo" RequiredError="El correo es requerido!" Label="Correo" />
-        <MudAutocomplete T="string" @bind-Value="_seleccionDepa" SearchFunc="Search" RequiredError="El departamento es requerido!" Label="Departamento" />
+        <MudAutocomplete T="string" @bind-Value="departamento1.Nombre" SearchFunc="Search" RequiredError="El departamento es requerido!" Label="Departamento" />
         <MudTextField T="int" @bind-Value="usuario1.Sueldo" Label="Sueldo" RequiredError="El sueldo es requerido!" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
         <MudTextField T="DateTime?" @bind-Value="usuario1.Fecharegistro" Label="Fecha Registro" Disabled="true" />
         
@@ -28,18 +28,45 @@
     [Parameter]
     public mUsuario usuario1 { get; set; } = new mUsuario();
 
-    string? _seleccionDepa;
+    [Parameter]
+    public mDepartamento departamento1 { get; set; } = new mDepartamento();
+
     public List<mDepartamento> listaDepartamento = new List<mDepartamento>();
+
+    private string OnDepartamentoChanged(int selectedDepartment)
+    {
+        string? nombre = "";
+        mDepartamento departamento = listaDepartamento.FirstOrDefault(d => d.Departamentoid == selectedDepartment);
+        nombre = departamento.Nombre;
+        return nombre;
+    }
+
+    private int OnDepartamentoChangedID()
+    {
+        int id = 0;
+        if(departamento1.Nombre != null)
+        {
+            mDepartamento departamento = listaDepartamento.FirstOrDefault(d => d.Nombre == departamento1.Nombre);
+            id = departamento.Departamentoid;
+        }
+        
+        return id;
+    }
 
     private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
     {
         listaDepartamento = await _sDepartamento.GetDepartamentos();
+
+        if (usuario1.Departamento != null && usuario1.Departamento!=0)
+            departamento1.Nombre = OnDepartamentoChanged(usuario1.Departamento);
+        
         await Task.Delay(5, token);
 
         // Si el valor está vacío, devolver todos los nombres
         if (string.IsNullOrEmpty(value))
             return listaDepartamento.Select(d => d.Nombre);
 
+        
         // Filtrar por nombre que contiene el valor ingresado
         return listaDepartamento
             .Where(d => d.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase))
@@ -48,6 +75,8 @@
 
     private async void Guardar()
     {
+        listaDepartamento = await _sDepartamento.GetDepartamentos();
+        usuario1.Departamento = OnDepartamentoChangedID();
 
         if (string.IsNullOrEmpty(usuario1.Nombre))
         {
@@ -59,7 +88,7 @@
             mResponse result = usuario1.Usuarioid > 0 ? (await _sUsuario.UpdateUsuarios(usuario1)) : (await _sUsuario.CreateUsuarios(usuario1));
             if (!result.error)
             {
-                SB.Add("El departamento se ha actualizado con exito", Severity.Success);
+                SB.Add("El usuario se ha actualizado con exito", Severity.Success);
                 Cancel();
 
             }
@@ -76,53 +105,8 @@
 
 
     }
+
     private void Cancel() => MudDialog.Cancel();
-
-    //private bool IsEditMode => IdDepartamento.HasValue;
-
-    //mDepartamento departamento1 = new mDepartamento();
-
-
-    // private async void Submit()
-    // {
-    //     mResponse resultado;
-
-    //     if (string.IsNullOrEmpty(departamento1.Nombre))
-    //     {
-    //         SB.Add("Falta nombre de departamento", Severity.Warning);
-    //         return;
-    //     }
-
-    //     if (departamento1.Departamentoid > 0)
-    //     {
-    //         //departamento1.Departamentoid = deo;
-    //         resultado = await _sDepartamento.UpdateDepartamento(departamento1);
-
-    //         if (!resultado.error)
-    //         {
-    //             SB.Add("El departamento se ha editado con exito", Severity.Success);
-    //             Cancel();
-    //         }
-    //         else
-    //         {
-    //             SB.Add(resultado.message, Severity.Error);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         resultado = await _sDepartamento.CreateDepartamento(departamento1);
-    //         if (!resultado.error)
-    //         {
-    //             SB.Add("El departamento se ha guardo con exito", Severity.Success);
-    //             Cancel();
-    //         }
-    //         else
-    //         {
-    //             SB.Add(resultado.message, Severity.Error);
-    //         }
-    //     }
-    // }
-
 
 }
 

@@ -1,6 +1,7 @@
 ﻿@page "/Usuarios/Usuario"
 
 @inject sUsuario _sUsuario
+@inject sDepartamento _sDepartamento
 @inject ISnackbar SB
 @inject IDialogService DialogService
 
@@ -31,7 +32,16 @@
                 <MudTd DataLabel="Id">@context.Usuarioid</MudTd>
                 <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
                 <MudTd DataLabel="Correo">@context.Correo</MudTd>
-                <MudTd DataLabel="Departamento">@context.Departamento</MudTd>
+                <MudTd DataLabel="Departamento">
+                    @if (context.Departamento != null)
+                    {
+                        @OnDepartamentoChanged(context.Departamento).Nombre
+                    }
+                    else
+                    {
+                        <em>No asignado</em>
+                    }
+                </MudTd>
                 <MudTd DataLabel="Sueldo">@context.Sueldo</MudTd>
                 <MudTd DataLabel="Fecha Registro">@context.Fecharegistro</MudTd>
                 <MudTd DataLabel="Acciones">
@@ -51,7 +61,12 @@
 
 @code {
     List<mUsuario> listadoUsuarios = new List<mUsuario>();
-
+    List<mDepartamento> listadoDepartamento = new List<mDepartamento>();
+    private mDepartamento OnDepartamentoChanged(int selectedDepartment)
+    {
+        mDepartamento departamento;
+        return departamento = listadoDepartamento.FirstOrDefault(d => d.Departamentoid == selectedDepartment);
+    }
 
     public async Task AgregarUsuario()
     {
@@ -66,8 +81,10 @@
 
     public async Task EditarUsuario(mUsuario usuario)
     {
+        mDepartamento depa = OnDepartamentoChanged(usuario.Departamento);
         var parameters = new DialogParameters();
         parameters.Add("usuario1", usuario);
+        parameters.Add("departamento1", depa);
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         await DialogService.Show<FrmUsuario>("Editar Empleado", parameters, options).Result;
@@ -112,6 +129,7 @@
     private async Task refrescarTabla()
     {
         listadoUsuarios.Clear();
+        listadoDepartamento = await _sDepartamento.GetDepartamentos();
         listadoUsuarios = await _sUsuario.GetUsuarios();
         StateHasChanged();
     }
